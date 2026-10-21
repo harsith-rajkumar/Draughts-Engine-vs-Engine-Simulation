@@ -1,4 +1,4 @@
-//g++ GUI.cpp V1.cpp V2.cpp -o GUI.exe -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows
+//g++ -O2 GUI.cpp V1.cpp V2.cpp -o GUI.exe -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows
 #include <bits/stdc++.h>
 #include "raylib.h"
 #include "engines.h"
