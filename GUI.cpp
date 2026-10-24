@@ -20,7 +20,7 @@ pair<ll,ll> squareToCoordinate(ll sq){
 }
 ll coordinateToSquare(pair<ll,ll> coordinates){
 	ll row=coordinates.first,col=coordinates.second;
-	ll coord=((5*(row-1))+ ((col+1)/2));
+	ll coord=((5*(row-1))+((col+1)/2));
 	return coord;
 }
 bool isEmpty(ll sq,ll &white_men,ll &white_kings,ll &black_men,ll &black_kings){
