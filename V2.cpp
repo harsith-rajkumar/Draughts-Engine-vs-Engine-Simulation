@@ -4,9 +4,13 @@ using namespace std;
 typedef long long ll;
 vector<string> generateValidMoves(ll white_men,ll white_kings,ll black_men,ll black_kings,string turn);
 void playMove(string move,ll &white_men,ll &white_kings,ll &black_men,ll &black_kings,ll &kingStreak);
-float eval2(ll white_men,ll white_kings,ll black_men,ll black_kings,string turn,ll depth){
-	if(depth==6){
-		float posValue=0;
+float eval2(ll white_men,ll white_kings,ll black_men,ll black_kings,string turn,ll depth,bool endgame){
+	float posValue=0;
+	ll maxDepth=7;
+	if(endgame){
+		maxDepth--;
+	}
+	if(depth==maxDepth){
 		for(ll sq=1;sq<=50;sq++){
 			if(white_men&(1LL<<sq)){
 				posValue+=1;
@@ -35,10 +39,10 @@ float eval2(ll white_men,ll white_kings,ll black_men,ll black_kings,string turn,
 		ll wm=white_men,wk=white_kings,bm=black_men,bk=black_kings,fakeKingStreak=0;
 		playMove(validMoves[i],wm,wk,bm,bk,fakeKingStreak);
 		if(turn=="w"){
-			ans=max(ans,eval1(wm,wk,bm,bk,"b",depth+1));
+			ans=max(ans,eval2(wm,wk,bm,bk,"b",depth+1,endgame));
 		}
 		else{
-			ans=min(ans,eval1(wm,wk,bm,bk,"w",depth+1));
+			ans=min(ans,eval2(wm,wk,bm,bk,"w",depth+1,endgame));
 		}
 	}
 	return ans;
@@ -47,7 +51,7 @@ string engine2(ll white_men,ll white_kings,ll black_men,ll black_kings,string tu
 	if(validMoves.size()==1){
 		return validMoves[0];
 	}
-    float best;
+	float best;
 	ll bestMoveIndex=0;
 	if(turn=="w"){
 		best=LLONG_MIN;
@@ -56,14 +60,20 @@ string engine2(ll white_men,ll white_kings,ll black_men,ll black_kings,string tu
 		best=LLONG_MAX;
 	}
 	for(size_t i=0;i<validMoves.size();i++){
-		ll wm=white_men,wk=white_kings,bm=black_men,bk=black_kings,fakeKingStreak=0;
+		ll wm=white_men,wk=white_kings,bm=black_men,bk=black_kings,fakeKingStreak=0,cnt=0;
 		playMove(validMoves[i],wm,wk,bm,bk,fakeKingStreak);
+		for(ll sq=1;sq<=50;sq++){
+			if(((1LL<<sq)&white_men) || ((1LL<<sq)&white_kings) || ((1LL<<sq)&black_men) || ((1LL<<sq)&black_kings)){
+				cnt++;
+			}
+		}
+		bool endgame=(cnt<=15);
 		float posEval;
 		if(turn=="w"){
-			posEval=eval1(wm,wk,bm,bk,"b",1);
+			posEval=eval2(wm,wk,bm,bk,"b",1,endgame);
 		}
 		else{
-			posEval=eval1(wm,wk,bm,bk,"w",1);
+			posEval=eval2(wm,wk,bm,bk,"w",1,endgame);
 		}
 		if(turn=="w"){
 			if(posEval>best){
